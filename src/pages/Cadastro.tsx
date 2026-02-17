@@ -14,10 +14,12 @@ type Props = {
     nome: string;
     tipo: string;
   };
+  chavesDisponiveis: number; // 👈 ADICIONE ESTA LINHA
   setPagina: (pagina: "home" | "cadastro") => void;
   handleLogout: () => void;
-  atualizarContagem: () => void;
+  atualizarContagem: () => Promise<void>;
 };
+
 
 export default function Cadastro({
   usuario,
