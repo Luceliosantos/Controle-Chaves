@@ -6,12 +6,10 @@ type Props = {
     nome: string;
     tipo: string;
   };
-  chavesDisponiveis: number;   // 👈 ADICIONE ISSO
-  atualizarContagem: () => void;
+  chavesDisponiveis: number;
   setPagina: (pagina: "home" | "cadastro") => void;
   handleLogout: () => void;
 };
-
 
 export default function Home({
   usuario,
@@ -36,7 +34,7 @@ export default function Home({
 
         {/* TÍTULO */}
         <div style={styles.titleArea}>
-          <h1 style={styles.title}>Controle de Chaves CEMIG</h1>
+          <h1 style={styles.title}>Controle de Chaves</h1>
           <p style={styles.subtitle}>
             Sistema Corporativo de Gestão de Chaves
           </p>
@@ -76,7 +74,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     minHeight: "100vh",
     backgroundImage:
-      "url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg/377c7a2b-edfd-dd1e-c8a6-91d79dc31a39?version=1.0&t=1726774318701')",
+      "url('https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1974&auto=format&fit=crop')",
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
@@ -85,7 +83,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 
   overlay: {
     minHeight: "100vh",
-    backgroundColor: "rgba(0,0,0,0.7)", // 40% visibilidade da imagem
+    backgroundColor: "rgba(0,0,0,0.7)",
     padding: 40,
   },
 
@@ -137,7 +135,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 
   logoutButton: {
-    border: "1px solid rgba(255,0,0,0.5)",
+    border: "1px solid rgba(255,0,0,0.6)",
     backgroundColor: "rgba(192,57,43,0.45)",
   },
 };
