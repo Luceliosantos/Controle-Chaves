@@ -70,10 +70,21 @@ export default function Home({
 // ESTILOS
 // ================================
 
-const styles: { [key: string]: React.CSSProperties } = { background: { height: "100vh", width: "100%", backgroundImage: "url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg/377c7a2b-edfd-dd1e-c8a6-91d79dc31a39?version=1.0&t=1726774318701')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", },
+const styles: { [key: string]: React.CSSProperties } = {
+  container: {
+    minHeight: "100vh",
+    width: "100%",
+    backgroundImage:
+      "url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg/377c7a2b-edfd-dd1e-c8a6-91d79dc31a39?version=1.0&t=1726774318701')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+  },
+
+  // 60% de transparência
   overlay: {
     minHeight: "100vh",
-    backgroundColor: "rgba(0,0,0,0.7)",
+    backgroundColor: "rgba(0,0,0,0.6)",
     padding: 40,
   },
 
