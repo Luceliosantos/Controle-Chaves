@@ -6,10 +6,12 @@ type Props = {
     nome: string;
     tipo: string;
   };
-  chavesDisponiveis: number;
+  chavesDisponiveis: number;   // 👈 ADICIONE ISSO
+  atualizarContagem: () => void;
   setPagina: (pagina: "home" | "cadastro") => void;
   handleLogout: () => void;
 };
+
 
 export default function Home({
   usuario,
