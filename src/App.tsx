@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "./supabase";
 import Home from "./pages/Home";
 import Cadastro from "./pages/Cadastro";
-
+<h1>Controle de Chaves CEMIG - TESTE</h1>
 type Usuario = {
   matricula: string;
   nome: string;
