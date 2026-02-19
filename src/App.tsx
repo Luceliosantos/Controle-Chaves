@@ -9,7 +9,7 @@ type Usuario = {
   tipo: string;
 };
 
-type Pagina = "home" | "cadastro";
+type Pagina = "home" | "cadastro" | "associacao";
 
 export default function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
