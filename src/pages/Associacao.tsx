@@ -7,8 +7,6 @@ type Props = {
     nome: string;
     tipo: string;
   };
-  setPagina: (pagina: "home" | "cadastro" | "associacao") => void;
-  handleLogout: () => void;
   atualizarContagem: () => Promise<void>;
 };
 
@@ -23,8 +21,6 @@ type Registro = {
 
 export default function Associacao({
   usuario,
-  setPagina,
-  handleLogout,
   atualizarContagem,
 }: Props) {
   const [nota, setNota] = useState("");
