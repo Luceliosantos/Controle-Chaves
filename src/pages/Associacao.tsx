@@ -8,6 +8,7 @@ type Props = {
     tipo: string;
   };
   atualizarContagem: () => Promise<void>;
+  setPagina: (pagina: "home" | "cadastro" | "associacao") => void;
 };
 
 type Registro = {
