@@ -14,7 +14,7 @@ type Registro = {
   numero: number;
   flh: string;
   poste: string;
-  coordenada: string;
+  coord: string;
   dt_ass_db: string;
 };
 
@@ -41,7 +41,7 @@ export default function Associacao({
   async function buscarLista(n: string) {
     const { data } = await supabase
       .from("db_chaves")
-      .select("numero, flh, poste, coordenada, dt_ass_db")
+      .select("numero, flh, poste, coord, dt_ass_db")
       .eq("ns", Number(n))
       .order("dt_ass_db", { ascending: false });
 
@@ -57,7 +57,7 @@ export default function Associacao({
     const { data: coordExiste } = await supabase
       .from("db_chaves")
       .select("numero")
-      .eq("coordenada", coordenada)
+      .eq("coord", coordenada)
       .not("ns", "is", null)
       .maybeSingle();
 
@@ -101,13 +101,13 @@ export default function Associacao({
 
     const { error } = await supabase
       .from("db_chaves")
-      .update({
+     .update({
         ns: Number(nota),
         flh: folha,
         poste: poste,
-        coordenada,
+        coord: coordenada,
         usu_ass: usuario.matricula,
-        dt_ass_db: new Date().toISOString(),
+        dt_ass_db: new Date(),
       })
       .eq("numero", chave.numero);
 
@@ -194,7 +194,7 @@ if (error) {
             {lista.map((r, i) => (
               <div key={i} style={styles.listaItem}>
                 <strong>{r.numero}</strong> | Folha {r.flh} | Poste{" "}
-                {r.poste} | {r.coordenada} |{" "}
+                {r.poste} | {r.coord} |{" "}
                 {new Date(r.dt_ass_db).toLocaleString("pt-BR")}
               </div>
             ))}
