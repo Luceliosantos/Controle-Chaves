@@ -92,7 +92,16 @@ export default function App() {
         />
       );
     }
-
+  if (pagina === "associacao") {
+  return (
+    <Associacao
+      usuario={usuario}
+      setPagina={setPagina}
+      handleLogout={handleLogout}
+      atualizarContagem={atualizarContagem}
+    />
+  );
+}
     return (
       <Home
         usuario={usuario}
