@@ -1,113 +1,134 @@
 import { useEffect, useState } from "react";
+import { supabase } from "../supabase";
 
-interface Chave {
+type Props = {
+  usuario: {
+    matricula: string;
+    nome: string;
+    tipo: string;
+  };
+  setPagina: (pagina: "home" | "cadastro" | "associacao") => void;
+  handleLogout: () => void;
+  atualizarContagem: () => Promise<void>;
+};
+
+type Chave = {
   id: number;
   numero: string;
-}
+};
 
-export default function Associacao() {
+export default function Associacao({
+  usuario,
+  setPagina,
+  handleLogout,
+  atualizarContagem,
+}: Props) {
   const [chaves, setChaves] = useState<Chave[]>([]);
-  const [chaveSelecionada, setChaveSelecionada] = useState<number | null>(null);
+  const [chaveId, setChaveId] = useState<number | null>(null);
   const [nota, setNota] = useState("");
   const [folha, setFolha] = useState("");
   const [poste, setPoste] = useState("");
   const [coordenada, setCoordenada] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // 🔄 Carregar chaves disponíveis
   useEffect(() => {
     carregarChaves();
   }, []);
 
   async function carregarChaves() {
-    const response = await fetch("http://localhost:3000/chaves-disponiveis");
-    const data = await response.json();
-    setChaves(data);
+    const { data } = await supabase
+      .from("db_chaves_disponiveis")
+      .select("id, numero");
+
+    if (data) setChaves(data);
   }
 
-  async function associar() {
-    if (!chaveSelecionada) {
+  async function handleAssociar() {
+    if (!chaveId) {
       setMensagem("Selecione uma chave.");
       return;
     }
 
-    const response = await fetch("http://localhost:3000/associar", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        chave_id: chaveSelecionada,
+    setLoading(true);
+
+    const { error } = await supabase.from("dbchaves_associacoes").insert([
+      {
+        chave_id: chaveId,
         nota,
         folha,
         poste,
         coordenada,
-      }),
-    });
+        usu_associacao: usuario.matricula,
+      },
+    ]);
 
-    if (response.ok) {
+    if (!error) {
       setMensagem("Associado com sucesso!");
       setNota("");
       setFolha("");
       setPoste("");
       setCoordenada("");
-      setChaveSelecionada(null);
-      carregarChaves(); // Atualiza lista
+      setChaveId(null);
+
+      await atualizarContagem();
+      carregarChaves();
     } else {
       setMensagem("Erro ao associar.");
+      console.log(error);
     }
+
+    setLoading(false);
   }
 
   return (
-    <div className="container">
-      <h1>Associação de Chaves</h1>
+    <div style={{ padding: 40 }}>
+      <h2>Associação de Chaves</h2>
 
-      <div className="form">
-        <label>Chave Disponível</label>
-        <select
-          value={chaveSelecionada ?? ""}
-          onChange={(e) => setChaveSelecionada(Number(e.target.value))}
-        >
-          <option value="">Selecione...</option>
-          {chaves.map((chave) => (
-            <option key={chave.id} value={chave.id}>
-              {chave.numero}
-            </option>
-          ))}
-        </select>
-
-        <input
-          type="text"
-          placeholder="Nota"
-          value={nota}
-          onChange={(e) => setNota(e.target.value)}
-        />
-
-        <input
-          type="text"
-          placeholder="Folha"
-          value={folha}
-          onChange={(e) => setFolha(e.target.value)}
-        />
-
-        <input
-          type="text"
-          placeholder="Poste"
-          value={poste}
-          onChange={(e) => setPoste(e.target.value)}
-        />
-
-        <input
-          type="text"
-          placeholder="Coordenada"
-          value={coordenada}
-          onChange={(e) => setCoordenada(e.target.value)}
-        />
-
-        <button onClick={associar}>Associar</button>
-
-        {mensagem && <p className="mensagem">{mensagem}</p>}
+      <div style={{ marginBottom: 20 }}>
+        <strong>{usuario.nome}</strong> | {usuario.matricula}
       </div>
+
+      <select
+        value={chaveId ?? ""}
+        onChange={(e) => setChaveId(Number(e.target.value))}
+      >
+        <option value="">Selecione uma chave</option>
+        {chaves.map((c) => (
+          <option key={c.id} value={c.id}>
+            {c.numero}
+          </option>
+        ))}
+      </select>
+
+      <br /><br />
+
+      <input placeholder="Nota" value={nota} onChange={(e) => setNota(e.target.value)} />
+      <br /><br />
+
+      <input placeholder="Folha" value={folha} onChange={(e) => setFolha(e.target.value)} />
+      <br /><br />
+
+      <input placeholder="Poste" value={poste} onChange={(e) => setPoste(e.target.value)} />
+      <br /><br />
+
+      <input placeholder="Coordenada" value={coordenada} onChange={(e) => setCoordenada(e.target.value)} />
+      <br /><br />
+
+      <button onClick={handleAssociar} disabled={loading}>
+        {loading ? "Associando..." : "Associar"}
+      </button>
+
+      <br /><br />
+
+      {mensagem && <p>{mensagem}</p>}
+
+      <br />
+
+      <button onClick={() => setPagina("home")}>Voltar</button>
+      <button onClick={handleLogout} style={{ marginLeft: 10 }}>
+        Sair
+      </button>
     </div>
   );
 }
