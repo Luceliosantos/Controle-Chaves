@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "./supabase";
 import Home from "./pages/Home";
 import Cadastro from "./pages/Cadastro";
+import Associacao from "./pages/Associacao"; // ✅ ADICIONADO
 
 type Usuario = {
   matricula: string;
@@ -9,7 +10,7 @@ type Usuario = {
   tipo: string;
 };
 
-type Pagina = "home" | "cadastro" | "associacao";
+type Pagina = "home" | "cadastro" | "associacao"; // ✅ ADICIONADO
 
 export default function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
@@ -20,10 +21,6 @@ export default function App() {
   const [pagina, setPagina] = useState<Pagina>("home");
   const [chavesDisponiveis, setChavesDisponiveis] = useState<number>(0);
 
-  // ================================
-  // FUNÇÃO ATUALIZAR CONTAGEM
-  // ================================
-
   async function atualizarContagem() {
     const { count, error } = await supabase
       .from("db_chaves_disponiveis")
@@ -33,10 +30,6 @@ export default function App() {
       setChavesDisponiveis(count ?? 0);
     }
   }
-
-  // ================================
-  // LOGIN
-  // ================================
 
   async function handleLogin(e?: React.FormEvent) {
     if (e) e.preventDefault();
@@ -63,9 +56,7 @@ export default function App() {
 
     setUsuario(data[0]);
     setPagina("home");
-
     await atualizarContagem();
-
     setLoading(false);
   }
 
@@ -75,10 +66,6 @@ export default function App() {
     setSenha("");
     setPagina("home");
   }
-
-  // ================================
-  // USUÁRIO LOGADO
-  // ================================
 
   if (usuario) {
     if (pagina === "cadastro") {
@@ -92,16 +79,18 @@ export default function App() {
         />
       );
     }
-  if (pagina === "associacao") {
-  return (
-    <Associacao
-      usuario={usuario}
-      setPagina={setPagina}
-      handleLogout={handleLogout}
-      atualizarContagem={atualizarContagem}
-    />
-  );
-}
+
+    if (pagina === "associacao") {
+      return (
+        <Associacao
+          usuario={usuario}
+          atualizarContagem={atualizarContagem}
+          setPagina={setPagina}
+          handleLogout={handleLogout}
+        />
+      );
+    }
+
     return (
       <Home
         usuario={usuario}
@@ -111,10 +100,6 @@ export default function App() {
       />
     );
   }
-
-  // ================================
-  // LOGIN
-  // ================================
 
   return (
     <div style={styles.loginContainer}>
