@@ -78,9 +78,7 @@ export default function Associacao({
       .maybeSingle();
 
     if (conjuntoExiste) {
-      setMensagem(
-        "Já existe chave com esta Nota, Folha e Poste."
-      );
+      setMensagem("Já existe chave com esta Nota, Folha e Poste.");
       setLoading(false);
       return;
     }
@@ -101,7 +99,7 @@ export default function Associacao({
 
     const { error } = await supabase
       .from("db_chaves")
-     .update({
+      .update({
         ns: Number(nota),
         flh: folha,
         poste: poste,
@@ -109,14 +107,14 @@ export default function Associacao({
         usu_ass: usuario.matricula,
         dt_ass_db: new Date(),
       })
-      .eq("numero", chave.numero);
+      .eq("numero", Number(chave.numero))
+      .is("ns", null);
 
-if (error) {
-  console.log("ERRO COMPLETO:", error);
-  setMensagem(error.message);
-  setLoading(false);
-  return;
-}
+    if (error) {
+      setMensagem(error.message);
+      setLoading(false);
+      return;
+    }
 
     setMensagem("Chave associada com sucesso!");
     await atualizarContagem();
@@ -128,78 +126,89 @@ if (error) {
     <div style={styles.container}>
       <div style={styles.overlay}>
         <div style={styles.topBar}>
-          <div>
-            <strong>{usuario.nome}</strong> | {usuario.matricula}
-          </div>
+          <strong>
+            {usuario.nome} | {usuario.matricula}
+          </strong>
         </div>
 
-        <div style={styles.card}>
-          <h2 style={styles.title}>Associar Chave</h2>
+        <div style={styles.contentRow}>
+          {/* FORMULÁRIO */}
+          <div style={styles.card}>
+            <h2 style={styles.title}>Associar Chave</h2>
 
-          <input
-            style={styles.input}
-            placeholder="Nota (10 dígitos)"
-            value={nota}
-            onChange={(e) => setNota(e.target.value.replace(/\D/g, ""))}
-          />
-
-          <input
-            style={styles.input}
-            placeholder="Folha"
-            value={folha}
-            onChange={(e) => setFolha(e.target.value.replace(/\D/g, ""))}
-          />
-
-          <input
-            style={styles.input}
-            placeholder="Poste"
-            value={poste}
-            onChange={(e) => setPoste(e.target.value.replace(/\D/g, ""))}
-          />
-
-          <input
-            style={styles.input}
-            placeholder="Coordenada (111111:2222222)"
-            value={coordenada}
-            onChange={(e) => setCoordenada(e.target.value)}
-          />
-
-          <button
-            style={{
-              ...styles.button,
-              opacity: formValido ? 1 : 0.5,
-            }}
-            disabled={!formValido || loading}
-            onClick={handleAssociar}
-          >
-            {loading ? "Associando..." : "Associar"}
-          </button>
-
-          {mensagem && (
-            <div
-              style={
-                mensagem.includes("sucesso")
-                  ? styles.msgSucesso
-                  : styles.msgErro
+            <input
+              style={styles.input}
+              placeholder="Nota (10 dígitos)"
+              value={nota}
+              onChange={(e) =>
+                setNota(e.target.value.replace(/\D/g, ""))
               }
+            />
+
+            <input
+              style={styles.input}
+              placeholder="Folha"
+              value={folha}
+              onChange={(e) =>
+                setFolha(e.target.value.replace(/\D/g, ""))
+              }
+            />
+
+            <input
+              style={styles.input}
+              placeholder="Poste"
+              value={poste}
+              onChange={(e) =>
+                setPoste(e.target.value.replace(/\D/g, ""))
+              }
+            />
+
+            <input
+              style={styles.input}
+              placeholder="Coordenada (111111:2222222)"
+              value={coordenada}
+              onChange={(e) => setCoordenada(e.target.value)}
+            />
+
+            <button
+              style={{
+                ...styles.button,
+                opacity: formValido ? 1 : 0.5,
+              }}
+              disabled={!formValido || loading}
+              onClick={handleAssociar}
             >
-              {mensagem}
+              {loading ? "Associando..." : "Associar"}
+            </button>
+
+            {mensagem && (
+              <div
+                style={
+                  mensagem.includes("sucesso")
+                    ? styles.msgSucesso
+                    : styles.msgErro
+                }
+              >
+                {mensagem}
+              </div>
+            )}
+          </div>
+
+          {/* LISTA */}
+          {lista.length > 0 && (
+            <div style={styles.listaCard}>
+              <h3>Chaves da Nota {nota}</h3>
+
+              {lista.map((r, i) => (
+                <div key={i} style={styles.listaItem}>
+                  <strong>{r.numero}</strong> | Folha {r.flh} | Poste{" "}
+                  {r.poste} | {r.coord} |{" "}
+                  {new Date(r.dt_ass_db).toLocaleString("pt-BR")}
+                </div>
+              ))}
             </div>
           )}
         </div>
-
-        {lista.length > 0 && (
-          <div style={styles.listaCard}>
-            <h3>Chaves da Nota {nota}</h3>
-            {lista.map((r, i) => (
-              <div key={i} style={styles.listaItem}>
-                <strong>{r.numero}</strong> | Folha {r.flh} | Poste{" "}
-                {r.poste} | {r.coord} |{" "}
-                {new Date(r.dt_ass_db).toLocaleString("pt-BR")}
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );
@@ -223,12 +232,26 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginBottom: 40,
     fontSize: 18,
   },
+  contentRow: {
+    display: "flex",
+    gap: "40px",
+    alignItems: "flex-start",
+    flexWrap: "wrap",
+  },
   card: {
+    width: "400px",
     background: "rgba(255,255,255,0.08)",
     backdropFilter: "blur(20px)",
     borderRadius: 20,
     padding: 30,
-    maxWidth: 500,
+  },
+  listaCard: {
+    flex: 1,
+    minWidth: "500px",
+    background: "rgba(255,255,255,0.08)",
+    padding: 25,
+    borderRadius: 20,
+    backdropFilter: "blur(20px)",
   },
   title: {
     marginBottom: 20,
@@ -263,13 +286,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     background: "rgba(46,204,113,0.2)",
     borderRadius: 8,
     color: "#2ecc71",
-  },
-  listaCard: {
-    marginTop: 40,
-    background: "rgba(255,255,255,0.08)",
-    padding: 20,
-    borderRadius: 20,
-    backdropFilter: "blur(20px)",
   },
   listaItem: {
     padding: 10,
