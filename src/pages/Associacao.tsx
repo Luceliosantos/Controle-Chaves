@@ -111,11 +111,12 @@ export default function Associacao({
       })
       .eq("numero", chave.numero);
 
-    if (error) {
-      setMensagem("Erro ao associar.");
-      setLoading(false);
-      return;
-    }
+if (error) {
+  console.log("ERRO COMPLETO:", error);
+  setMensagem(error.message);
+  setLoading(false);
+  return;
+}
 
     setMensagem("Chave associada com sucesso!");
     await atualizarContagem();
