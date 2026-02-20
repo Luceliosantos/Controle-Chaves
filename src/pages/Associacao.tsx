@@ -85,9 +85,9 @@ export default function Associacao({
     <div style={{ padding: 40 }}>
       <h2>Associação de Chaves</h2>
 
-      <div style={{ marginBottom: 20 }}>
-        <strong>{usuario.nome}</strong> | {usuario.matricula}
-      </div>
+      <p>
+        {usuario.nome} | {usuario.matricula}
+      </p>
 
       <select
         value={chaveId ?? ""}
