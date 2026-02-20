@@ -49,7 +49,15 @@ export default function Home({
             Cadastrar
           </button>
 
-          <button style={styles.button}>Associar</button>
+
+          <button
+          style={styles.button}
+          onClick={() => setPagina("associacao")}
+        >
+          Associar
+        </button>
+          
+          
           <button style={styles.button}>Relatório</button>
           <button style={styles.button}>Usuários</button>
           <button style={styles.button}>Créditos</button>
