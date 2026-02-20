@@ -82,11 +82,9 @@ export default function App() {
 
     if (pagina === "associacao") {
       return (
-        <Associacao
+       <Associacao
           usuario={usuario}
           atualizarContagem={atualizarContagem}
-          setPagina={setPagina}
-          handleLogout={handleLogout}
         />
       );
     }
