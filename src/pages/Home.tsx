@@ -51,11 +51,11 @@ export default function Home({
 
 
           <button
-          style={styles.button}
-          onClick={() => setPagina("associacao")}
-        >
-          Associar
-        </button>
+            style={styles.button}
+            onClick={() => setPagina("associacao")}
+          >
+            Associar
+          </button>
           
           
           <button style={styles.button}>Relatório</button>
