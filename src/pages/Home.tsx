@@ -7,7 +7,9 @@ type Props = {
     tipo: string;
   };
   chavesDisponiveis: number;
-  setPagina: (pagina: "home" | "cadastro" | "associacao") => void; // ✅ corrigido
+  setPagina: (
+    pagina: "home" | "cadastro" | "associacao" | "consulta"
+  ) => void;
   handleLogout: () => void;
 };
 
