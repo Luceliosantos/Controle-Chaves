@@ -22,6 +22,7 @@ type Registro = {
 export default function Associacao({
   usuario,
   atualizarContagem,
+  setPagina,
 }: Props) {
   const [nota, setNota] = useState("");
   const [folha, setFolha] = useState("");
@@ -127,13 +128,21 @@ export default function Associacao({
     <div style={styles.container}>
       <div style={styles.overlay}>
         <div style={styles.topBar}>
-          <strong>
-            {usuario.nome} | {usuario.matricula}
-          </strong>
+          <div>
+            <strong>
+              {usuario.nome} | {usuario.matricula}
+            </strong>
+          </div>
+
+          <button
+            style={styles.btnHome}
+            onClick={() => setPagina("home")}
+          >
+            Início
+          </button>
         </div>
 
         <div style={styles.contentRow}>
-          {/* FORMULÁRIO */}
           <div style={styles.card}>
             <h2 style={styles.title}>Associar Chave</h2>
 
@@ -195,7 +204,6 @@ export default function Associacao({
             )}
           </div>
 
-          {/* LISTA */}
           {lista.length > 0 && (
             <div style={styles.listaCard}>
               <h3>Chaves da Nota {nota}</h3>
@@ -232,6 +240,17 @@ const styles: { [key: string]: React.CSSProperties } = {
   topBar: {
     marginBottom: 40,
     fontSize: 18,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  btnHome: {
+    padding: "10px 18px",
+    borderRadius: 8,
+    border: "1px solid rgba(255,255,255,0.4)",
+    background: "rgba(255,255,255,0.15)",
+    color: "white",
+    cursor: "pointer",
   },
   contentRow: {
     display: "flex",
