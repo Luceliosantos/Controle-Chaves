@@ -318,19 +318,22 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: "black",
   },
   th: {
-    border: "1px solid #ccc",
-    padding: 10,
-    textAlign: "center",
-    backgroundColor: "#1e3c72",
-    color: "white",
+  border: "1px solid #ccc",
+  padding: "5px 8px",   // antes era 10
+  textAlign: "center",
+  backgroundColor: "#1e3c72",
+  color: "white",
+  fontSize: "13px",
   },
+  
   td: {
     border: "1px solid #ccc",
-    padding: 10,
+    padding: "5px 8px",   // antes era 10
     textAlign: "center",
+    fontSize: "13px",
   },
   linhaUltima: {
-    backgroundColor: "#d4edda",
+    backgroundColor: "#a3d9a5",  // verde mais forte
   },
   linhaNormal: {},
   msgErro: {
