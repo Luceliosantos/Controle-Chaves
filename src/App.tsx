@@ -85,6 +85,7 @@ export default function App() {
        <Associacao
           usuario={usuario}
           atualizarContagem={atualizarContagem}
+          setPagina={setPagina}
         />
       );
     }
