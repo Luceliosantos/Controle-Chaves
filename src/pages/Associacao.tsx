@@ -128,11 +128,9 @@ export default function Associacao({
     <div style={styles.container}>
       <div style={styles.overlay}>
         <div style={styles.topBar}>
-          <div>
-            <strong>
-              {usuario.nome} | {usuario.matricula}
-            </strong>
-          </div>
+          <strong>
+            {usuario.nome} | {usuario.matricula}
+          </strong>
 
           <button
             style={styles.btnHome}
@@ -144,7 +142,7 @@ export default function Associacao({
 
         <div style={styles.contentRow}>
           <div style={styles.card}>
-            <h2 style={styles.title}>Associar Chave</h2>
+            <h2>Associar Chave</h2>
 
             <input
               style={styles.input}
@@ -208,13 +206,39 @@ export default function Associacao({
             <div style={styles.listaCard}>
               <h3>Chaves da Nota {nota}</h3>
 
-              {lista.map((r, i) => (
-                <div key={i} style={styles.listaItem}>
-                  <strong>{r.numero}</strong> | Folha {r.flh} | Poste{" "}
-                  {r.poste} | {r.coord} |{" "}
-                  {new Date(r.dt_ass_db).toLocaleString("pt-BR")}
-                </div>
-              ))}
+              <table style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.th}>Número</th>
+                    <th style={styles.th}>Folha</th>
+                    <th style={styles.th}>Poste</th>
+                    <th style={styles.th}>Coordenada</th>
+                    <th style={styles.th}>Data/Hora</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {lista.map((r, i) => (
+                    <tr
+                      key={i}
+                      style={
+                        i === 0
+                          ? styles.linhaUltima
+                          : styles.linhaNormal
+                      }
+                    >
+                      <td style={styles.td}>{r.numero}</td>
+                      <td style={styles.td}>{r.flh}</td>
+                      <td style={styles.td}>{r.poste}</td>
+                      <td style={styles.td}>{r.coord}</td>
+                      <td style={styles.td}>
+                        {new Date(r.dt_ass_db).toLocaleString(
+                          "pt-BR"
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
@@ -239,7 +263,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   topBar: {
     marginBottom: 40,
-    fontSize: 18,
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -254,12 +277,11 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   contentRow: {
     display: "flex",
-    gap: "40px",
+    gap: 40,
     alignItems: "flex-start",
-    flexWrap: "wrap",
   },
   card: {
-    width: "400px",
+    width: 400,
     background: "rgba(255,255,255,0.08)",
     backdropFilter: "blur(20px)",
     borderRadius: 20,
@@ -267,14 +289,10 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   listaCard: {
     flex: 1,
-    minWidth: "500px",
     background: "rgba(255,255,255,0.08)",
     padding: 25,
     borderRadius: 20,
     backdropFilter: "blur(20px)",
-  },
-  title: {
-    marginBottom: 20,
   },
   input: {
     width: "100%",
@@ -282,7 +300,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginBottom: 15,
     borderRadius: 10,
     border: "none",
-    fontSize: 15,
   },
   button: {
     width: "100%",
@@ -293,6 +310,29 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontWeight: 600,
     cursor: "pointer",
   },
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    marginTop: 20,
+    backgroundColor: "white",
+    color: "black",
+  },
+  th: {
+    border: "1px solid #ccc",
+    padding: 10,
+    textAlign: "center",
+    backgroundColor: "#1e3c72",
+    color: "white",
+  },
+  td: {
+    border: "1px solid #ccc",
+    padding: 10,
+    textAlign: "center",
+  },
+  linhaUltima: {
+    backgroundColor: "#d4edda",
+  },
+  linhaNormal: {},
   msgErro: {
     marginTop: 15,
     padding: 12,
@@ -306,9 +346,5 @@ const styles: { [key: string]: React.CSSProperties } = {
     background: "rgba(46,204,113,0.2)",
     borderRadius: 8,
     color: "#2ecc71",
-  },
-  listaItem: {
-    padding: 10,
-    borderBottom: "1px solid rgba(255,255,255,0.2)",
   },
 };
