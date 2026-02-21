@@ -1,102 +1,102 @@
-import { useEffect, useState } from "react"
-import { supabase } from "../lib/supabase"
-import { useNavigate } from "react-router-dom"
-import * as XLSX from "xlsx"
-import jsPDF from "jspdf"
-import autoTable from "jspdf-autotable"
+import { useState } from "react";
+import { supabase } from "../supabase";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
+type Props = {
+  usuario: {
+    matricula: string;
+    nome: string;
+    tipo: string;
+  };
+  setPagina: React.Dispatch<
+    React.SetStateAction<"home" | "cadastro" | "associacao" | "consulta">
+  >;
+};
 
 type Registro = {
-  id: number
-  nota: string
-  chave: string
-  coordenada: string
-  usu_ass: string
-  dt_ass_db: string
-  [key: string]: any
-}
+  [key: string]: any;
+};
 
-export default function Consulta() {
+export default function Consulta({ setPagina }: Props) {
+  const [tipoBusca, setTipoBusca] = useState("");
+  const [valorBusca, setValorBusca] = useState("");
+  const [dados, setDados] = useState<Registro[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate()
-
-  const [tipoBusca, setTipoBusca] = useState("")
-  const [valorBusca, setValorBusca] = useState("")
-  const [dados, setDados] = useState<Registro[]>([])
-  const [loading, setLoading] = useState(false)
-
-  const botaoHabilitado = tipoBusca !== "" && valorBusca !== ""
+  const botaoHabilitado = tipoBusca !== "" && valorBusca !== "";
 
   async function consultar() {
-    setLoading(true)
+    setLoading(true);
 
-    let query = supabase.from("dbchaves_associacoes").select("*")
+    let query = supabase.from("dbchaves_associacoes").select("*");
 
-    if (tipoBusca === "data") {
-      query = query.eq("dt_ass_db", valorBusca)
+    if (tipoBusca === "dt_ass_db") {
+      query = query.eq("dt_ass_db", valorBusca);
     } else {
-      query = query.ilike(tipoBusca, `%${valorBusca}%`)
+      query = query.ilike(tipoBusca, `%${valorBusca}%`);
     }
 
-    const { data, error } = await query
+    const { data, error } = await query;
 
     if (!error && data) {
-      setDados(data)
+      setDados(data);
     }
 
-    setLoading(false)
+    setLoading(false);
   }
 
   async function chavesDisponiveis() {
     const { data } = await supabase
       .from("db_chaves_disponiveis")
-      .select("*")
+      .select("*");
 
-    if (data) setDados(data)
+    if (data) setDados(data);
   }
 
   async function chavesEmpenhadas() {
     const { data } = await supabase
       .from("dbchaves_associacoes")
-      .select("*")
+      .select("*");
 
-    if (data) setDados(data)
+    if (data) setDados(data);
   }
 
   function gerarExcel() {
-    const worksheet = XLSX.utils.json_to_sheet(dados)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Consulta")
-    XLSX.writeFile(workbook, "consulta.xlsx")
+    const worksheet = XLSX.utils.json_to_sheet(dados);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Consulta");
+    XLSX.writeFile(workbook, "consulta.xlsx");
   }
 
   function gerarPDF() {
-    const doc = new jsPDF()
+    if (dados.length === 0) return;
+
+    const doc = new jsPDF();
 
     autoTable(doc, {
-      head: [Object.keys(dados[0] || {})],
-      body: dados.map(obj => Object.values(obj))
-    })
+      head: [Object.keys(dados[0])],
+      body: dados.map((obj) => Object.values(obj)),
+    });
 
-    doc.save("consulta.pdf")
+    doc.save("consulta.pdf");
   }
 
   function limpar() {
-    setDados([])
-    setTipoBusca("")
-    setValorBusca("")
+    setDados([]);
+    setTipoBusca("");
+    setValorBusca("");
   }
 
   return (
     <div style={{ padding: 30 }}>
-
       <h2>Consulta de Chaves</h2>
 
-      {/* Área de Pesquisa */}
       <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
-
         <select
           value={tipoBusca}
-          onChange={e => setTipoBusca(e.target.value)}
+          onChange={(e) => setTipoBusca(e.target.value)}
         >
           <option value="">Selecione</option>
           <option value="nota">Nota</option>
@@ -109,27 +109,18 @@ export default function Consulta() {
         <input
           type={tipoBusca === "dt_ass_db" ? "date" : "text"}
           value={valorBusca}
-          onChange={e => setValorBusca(e.target.value)}
+          onChange={(e) => setValorBusca(e.target.value)}
         />
 
-        <button
-          disabled={!botaoHabilitado}
-          onClick={consultar}
-        >
+        <button disabled={!botaoHabilitado} onClick={consultar}>
           Consultar
         </button>
 
-        <button onClick={() => navigate("/")}>
-          Home
-        </button>
+        <button onClick={() => setPagina("home")}>Home</button>
 
-        <button onClick={chavesDisponiveis}>
-          Chaves Disponíveis
-        </button>
+        <button onClick={chavesDisponiveis}>Chaves Disponíveis</button>
 
-        <button onClick={chavesEmpenhadas}>
-          Chaves Empenhadas
-        </button>
+        <button onClick={chavesEmpenhadas}>Chaves Empenhadas</button>
 
         <button onClick={gerarPDF} disabled={dados.length === 0}>
           PDF
@@ -139,32 +130,27 @@ export default function Consulta() {
           EXCEL
         </button>
 
-        <button onClick={limpar}>
-          Limpar
-        </button>
-
+        <button onClick={limpar}>Limpar</button>
       </div>
 
-      {/* Tabela */}
       <div style={{ overflowX: "auto" }}>
-
         <table
           style={{
             borderCollapse: "collapse",
             width: "100%",
-            textAlign: "center"
+            textAlign: "center",
           }}
         >
           <thead>
             <tr>
               {dados[0] &&
-                Object.keys(dados[0]).map(coluna => (
+                Object.keys(dados[0]).map((coluna) => (
                   <th
                     key={coluna}
                     style={{
                       border: "1px solid black",
                       padding: "5px",
-                      backgroundColor: "#e6e6e6"
+                      backgroundColor: "#e6e6e6",
                     }}
                   >
                     {coluna}
@@ -181,7 +167,7 @@ export default function Consulta() {
                     key={i}
                     style={{
                       border: "1px solid black",
-                      padding: "4px"
+                      padding: "4px",
                     }}
                   >
                     {String(valor)}
@@ -190,13 +176,10 @@ export default function Consulta() {
               </tr>
             ))}
           </tbody>
-
         </table>
-
       </div>
 
       {loading && <p>Consultando...</p>}
-
     </div>
-  )
+  );
 }
