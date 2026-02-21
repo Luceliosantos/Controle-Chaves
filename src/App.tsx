@@ -3,7 +3,6 @@ import { supabase } from "./supabase";
 import Home from "./pages/Home";
 import Cadastro from "./pages/Cadastro";
 import Associacao from "./pages/Associacao"; // ✅ ADICIONADO
-import Consulta from "./pages/Consulta"
 
 type Usuario = {
   matricula: string;
@@ -11,7 +10,7 @@ type Usuario = {
   tipo: string;
 };
 
-type Pagina = "home" | "cadastro" | "associacao"; // ✅ ADICIONADO
+type Pagina = "home" | "cadastro" | "associacao" | "consulta";
 
 export default function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
@@ -90,7 +89,14 @@ export default function App() {
         />
       );
     }
-
+    if (pagina === "consulta") {
+        return (
+          <Consulta
+            usuario={usuario}
+            setPagina={setPagina}
+          />
+        );
+      }
     return (
       <Home
         usuario={usuario}
