@@ -3,6 +3,7 @@ import { supabase } from "./supabase";
 import Home from "./pages/Home";
 import Cadastro from "./pages/Cadastro";
 import Associacao from "./pages/Associacao"; // ✅ ADICIONADO
+import Consulta from "./pages/Consulta"
 
 type Usuario = {
   matricula: string;
