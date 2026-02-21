@@ -49,6 +49,9 @@ export default function Home({
             Cadastrar
           </button>
 
+          <button onClick={() => setPagina("consulta")}>
+            Consulta
+          </button>
 
           <button
             style={styles.button}
