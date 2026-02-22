@@ -90,13 +90,36 @@ export default function Consulta({ setPagina }: Props) {
   }
 
   return (
-    <div style={{ padding: 30 }}>
-      <h2>Consulta de Chaves</h2>
+  <div style={styles.container}>
+    <div style={styles.overlay}>
+      
+      {/* HEADER */}
+      <div style={styles.header}>
+        <div>
+          <strong>{usuario.nome}</strong> | {usuario.matricula}
+        </div>
+        <button
+          style={{ ...styles.button, ...styles.logoutButton }}
+          onClick={() => setPagina("home")}
+        >
+          Home
+        </button>
+      </div>
 
-      <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
+      {/* TÍTULO */}
+      <div style={styles.titleArea}>
+        <h1 style={styles.title}>Consulta de Chaves</h1>
+        <p style={styles.subtitle}>
+          Pesquisa e geração de relatórios
+        </p>
+      </div>
+
+      {/* PAINEL DE BUSCA */}
+      <div style={styles.panel}>
         <select
           value={tipoBusca}
           onChange={(e) => setTipoBusca(e.target.value)}
+          style={styles.input}
         >
           <option value="">Selecione</option>
           <option value="nota">Nota</option>
@@ -110,49 +133,46 @@ export default function Consulta({ setPagina }: Props) {
           type={tipoBusca === "dt_ass_db" ? "date" : "text"}
           value={valorBusca}
           onChange={(e) => setValorBusca(e.target.value)}
+          style={styles.input}
         />
 
-        <button disabled={!botaoHabilitado} onClick={consultar}>
+        <button
+          disabled={!botaoHabilitado}
+          onClick={consultar}
+          style={styles.button}
+        >
           Consultar
         </button>
 
-        <button onClick={() => setPagina("home")}>Home</button>
+        <button onClick={chavesDisponiveis} style={styles.button}>
+          Chaves Disponíveis
+        </button>
 
-        <button onClick={chavesDisponiveis}>Chaves Disponíveis</button>
+        <button onClick={chavesEmpenhadas} style={styles.button}>
+          Chaves Empenhadas
+        </button>
 
-        <button onClick={chavesEmpenhadas}>Chaves Empenhadas</button>
-
-        <button onClick={gerarPDF} disabled={dados.length === 0}>
+        <button onClick={gerarPDF} disabled={dados.length === 0} style={styles.button}>
           PDF
         </button>
 
-        <button onClick={gerarExcel} disabled={dados.length === 0}>
-          EXCEL
+        <button onClick={gerarExcel} disabled={dados.length === 0} style={styles.button}>
+          Excel
         </button>
 
-        <button onClick={limpar}>Limpar</button>
+        <button onClick={limpar} style={styles.button}>
+          Limpar
+        </button>
       </div>
 
-      <div style={{ overflowX: "auto" }}>
-        <table
-          style={{
-            borderCollapse: "collapse",
-            width: "100%",
-            textAlign: "center",
-          }}
-        >
+      {/* TABELA */}
+      <div style={styles.tableContainer}>
+        <table style={styles.table}>
           <thead>
             <tr>
               {dados[0] &&
                 Object.keys(dados[0]).map((coluna) => (
-                  <th
-                    key={coluna}
-                    style={{
-                      border: "1px solid black",
-                      padding: "5px",
-                      backgroundColor: "#e6e6e6",
-                    }}
-                  >
+                  <th key={coluna} style={styles.th}>
                     {coluna}
                   </th>
                 ))}
@@ -163,13 +183,7 @@ export default function Consulta({ setPagina }: Props) {
             {dados.map((linha, index) => (
               <tr key={index}>
                 {Object.values(linha).map((valor, i) => (
-                  <td
-                    key={i}
-                    style={{
-                      border: "1px solid black",
-                      padding: "4px",
-                    }}
-                  >
+                  <td key={i} style={styles.td}>
                     {String(valor)}
                   </td>
                 ))}
@@ -179,7 +193,8 @@ export default function Consulta({ setPagina }: Props) {
         </table>
       </div>
 
-      {loading && <p>Consultando...</p>}
+      {loading && <p style={{ color: "white" }}>Consultando...</p>}
+
     </div>
-  );
-}
+  </div>
+);
