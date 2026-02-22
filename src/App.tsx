@@ -22,15 +22,16 @@ export default function App() {
   const [pagina, setPagina] = useState<Pagina>("home");
   const [chavesDisponiveis, setChavesDisponiveis] = useState<number>(0);
 
-  async function atualizarContagem() {
-    const { count, error } = await supabase
-      .from("db_chaves_disponiveis")
-      .select("*", { count: "exact", head: true });
+async function atualizarContagem() {
+  const { count, error } = await supabase
+    .from("dbchaves_associacoes")
+    .select("*", { count: "exact", head: true })
+    .is("nota", null);
 
-    if (!error) {
-      setChavesDisponiveis(count ?? 0);
-    }
+  if (!error) {
+    setChavesDisponiveis(count ?? 0);
   }
+}
 
   async function handleLogin(e?: React.FormEvent) {
     if (e) e.preventDefault();
