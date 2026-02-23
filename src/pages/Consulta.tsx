@@ -33,29 +33,39 @@ export default function Consulta({ usuario, setPagina }: Props) {
 async function consultar() {
   setLoading(true);
 
-  const { data, error } = await supabase
-    .from("db_chaves")
-    .select("*");
+  let query = supabase.from("db_chaves").select("*");
 
-  console.log("DATA:", data);
-  console.log("ERROR:", error);
+  // Nota (ns) é número
+  if (tipoBusca === "ns") {
+    query = query.eq("ns", Number(valorBusca));
+  }
 
-  if (data) setDados(data);
+  // Chave (numero) é número
+  else if (tipoBusca === "numero") {
+    query = query.eq("numero", Number(valorBusca));
+  }
+
+  // Data
+  else if (tipoBusca === "dt_ass_db") {
+    query = query.eq("dt_ass_db", valorBusca);
+  }
+
+  // Campos texto
+  else {
+    query = query.ilike(tipoBusca, `%${valorBusca}%`);
+  }
+
+  const { data, error } = await query;
+
+  console.log("Filtro aplicado:", tipoBusca, valorBusca);
+  console.log("Resultado:", data);
+
+  if (!error && data) {
+    setDados(data);
+  }
 
   setLoading(false);
 }
-
-  // ===============================
-  // CHAVES DISPONÍVEIS
-  // ===============================
-  async function chavesDisponiveis() {
-    const { data } = await supabase
-      .from("db_chaves")
-      .select("*")
-      .is("ns", null);
-
-    if (data) setDados(data);
-  }
 
   // ===============================
   // CHAVES EMPENHADAS
