@@ -79,6 +79,18 @@ async function consultar() {
     if (data) setDados(data);
   }
 
+// ===============================
+// CHAVES DISPONÍVEIS
+// ===============================
+async function chavesDisponiveis() {
+  const { data } = await supabase
+    .from("db_chaves")
+    .select("*")
+    .is("ns", null);
+
+  if (data) setDados(data);
+}
+  
   function gerarExcel() {
     const worksheet = XLSX.utils.json_to_sheet(dados);
     const workbook = XLSX.utils.book_new();
