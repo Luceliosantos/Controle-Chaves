@@ -30,25 +30,20 @@ export default function Consulta({ usuario, setPagina }: Props) {
   // ===============================
   // CONSULTAR
   // ===============================
-  async function consultar() {
-    setLoading(true);
+async function consultar() {
+  setLoading(true);
 
-    let query = supabase.from("db_chaves").select("*");
+  const { data, error } = await supabase
+    .from("db_chaves")
+    .select("*");
 
-    if (tipoBusca === "dt_ass_db") {
-      query = query.eq("dt_ass_db", valorBusca);
-    } else {
-      query = query.ilike(tipoBusca, `%${valorBusca}%`);
-    }
+  console.log("DATA:", data);
+  console.log("ERROR:", error);
 
-    const { data, error } = await query;
+  if (data) setDados(data);
 
-    if (!error && data) {
-      setDados(data);
-    }
-
-    setLoading(false);
-  }
+  setLoading(false);
+}
 
   // ===============================
   // CHAVES DISPONÍVEIS
