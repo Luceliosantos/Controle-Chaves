@@ -128,17 +128,17 @@ export default function Consulta({ usuario, setPagina }: Props) {
         {/* PAINEL DE BUSCA */}
         <div style={styles.panel}>
           <select
-            value={tipoBusca}
-            onChange={(e) => setTipoBusca(e.target.value)}
-            style={styles.input}
-          >
-            <option value="">Selecione</option>
-            <option value="nota">Nota</option>
-            <option value="chave">Chave</option>
-            <option value="coordenada">Coordenada</option>
-            <option value="usu_ass">Projetista</option>
-            <option value="dt_ass_db">Data</option>
-          </select>
+          value={tipoBusca}
+          onChange={(e) => setTipoBusca(e.target.value)}
+          style={styles.input}
+        >
+          <option value="">Selecione</option>
+          <option value="ns">Nota</option>
+          <option value="numero">Chave</option>
+          <option value="coordenada">Coordenada</option>
+          <option value="usu_ass">Projetista</option>
+          <option value="dt_ass_db">Data</option>
+        </select>
 
           <input
             type={tipoBusca === "dt_ass_db" ? "date" : "text"}
