@@ -46,7 +46,9 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
     const { data, error } = await query;
 
-    if (!error && data) setDados(data);
+    if (!error && data) {
+      setDados(data);
+    }
 
     setLoading(false);
   }
@@ -209,6 +211,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
                   ))}
               </tr>
             </thead>
+
             <tbody>
               {dados.map((linha, index) => (
                 <tr key={index}>
@@ -236,36 +239,30 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundSize: "cover",
     backgroundPosition: "center",
   },
-
   overlay: {
     minHeight: "100vh",
     backgroundColor: "rgba(0,0,0,0.65)",
     padding: 40,
   },
-
   header: {
     display: "flex",
     justifyContent: "space-between",
     color: "white",
     marginBottom: 40,
   },
-
   titleArea: {
     textAlign: "center",
     color: "white",
     marginBottom: 40,
   },
-
   title: {
     fontSize: 36,
     margin: 0,
   },
-
   subtitle: {
     marginTop: 10,
     opacity: 0.85,
   },
-
   panel: {
     maxWidth: 1100,
     margin: "0 auto 40px auto",
@@ -273,25 +270,21 @@ const styles: { [key: string]: React.CSSProperties } = {
     flexDirection: "column",
     gap: 20,
   },
-
   grupoBusca: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
     gap: 15,
   },
-
   grupoRelatorio: {
     display: "flex",
     justifyContent: "flex-end",
     gap: 15,
   },
-
   input: {
     padding: 10,
     borderRadius: 8,
     border: "1px solid #ccc",
   },
-
   button: {
     padding: "10px 12px",
     height: "42px",
@@ -301,39 +294,28 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: "white",
     cursor: "pointer",
   },
-
   logoutButton: {
     backgroundColor: "rgba(192,57,43,0.6)",
   },
-
   tableContainer: {
-    maxWidth: "1200px",
-    margin: "0 auto",
+    maxWidth: "100%",
     overflowX: "auto",
     backgroundColor: "white",
-    borderRadius: 12,
-    padding: 30,
-    boxShadow: "0 8px 25px rgba(0,0,0,0.25)",
+    borderRadius: 10,
+    padding: 20,
   },
-
   table: {
-    width: "auto",
-    minWidth: "100%",
+    width: "100%",
     borderCollapse: "collapse",
     textAlign: "center",
-    tableLayout: "auto",
   },
-
   th: {
     border: "1px solid #ccc",
     padding: 8,
     backgroundColor: "#f2f2f2",
-    whiteSpace: "nowrap",
   },
-
   td: {
     border: "1px solid #ccc",
     padding: 6,
-    whiteSpace: "nowrap",
   },
 };
