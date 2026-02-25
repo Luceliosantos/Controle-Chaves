@@ -24,12 +24,10 @@ export default function Consulta({ usuario, setPagina }: Props) {
   const [valorBusca, setValorBusca] = useState("");
   const [dados, setDados] = useState<Registro[]>([]);
   const [loading, setLoading] = useState(false);
-  const [modoDisponivel, setModoDisponivel] = useState(false);
 
   const botaoHabilitado = tipoBusca !== "" && valorBusca !== "";
 
   async function consultar() {
-    setModoDisponivel(false);
     setLoading(true);
 
     let query = supabase.from("db_chaves").select("*");
@@ -54,8 +52,6 @@ export default function Consulta({ usuario, setPagina }: Props) {
   }
 
   async function chavesEmpenhadas() {
-    setModoDisponivel(false);
-
     const { data } = await supabase
       .from("db_chaves")
       .select("*")
@@ -65,11 +61,9 @@ export default function Consulta({ usuario, setPagina }: Props) {
   }
 
   async function chavesDisponiveis() {
-    setModoDisponivel(true);
-
     const { data } = await supabase
       .from("db_chaves")
-      .select("numero, dt_cad_db, usu_cad_db")
+      .select("*")
       .is("ns", null);
 
     if (data) setDados(data);
@@ -88,7 +82,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
     const doc = new jsPDF();
 
     autoTable(doc, {
-      head: [Object.keys(dados[0]).map(formatarCabecalho)],
+      head: [Object.keys(dados[0])],
       body: dados.map((obj) => Object.values(obj)),
     });
 
@@ -96,30 +90,15 @@ export default function Consulta({ usuario, setPagina }: Props) {
   }
 
   function limpar() {
-    setModoDisponivel(false);
     setDados([]);
     setTipoBusca("");
     setValorBusca("");
   }
 
-  function formatarCabecalho(coluna: string) {
-    if (!modoDisponivel) return coluna;
-
-    switch (coluna) {
-      case "numero":
-        return "Chave";
-      case "dt_cad_db":
-        return "Data Cadastro DB";
-      case "usu_cad_db":
-        return "Usuario Cadastro DB";
-      default:
-        return coluna;
-    }
-  }
-
   return (
     <div style={styles.container}>
       <div style={styles.overlay}>
+        {/* HEADER */}
         <div style={styles.header}>
           <div>
             <strong>{usuario.nome}</strong> | {usuario.matricula}
@@ -132,11 +111,13 @@ export default function Consulta({ usuario, setPagina }: Props) {
           </button>
         </div>
 
+        {/* TÍTULO */}
         <div style={styles.titleArea}>
           <h1 style={styles.title}>Consulta de Chaves</h1>
           <p style={styles.subtitle}>Pesquisa e geração de relatórios</p>
         </div>
 
+        {/* PAINEL DE BUSCA */}
         <div style={styles.panel}>
           <div style={styles.grupoBusca}>
             <select
@@ -199,6 +180,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
           </div>
         </div>
 
+        {/* TABELA */}
         <div style={styles.tableContainer}>
           <table style={styles.table}>
             <thead>
@@ -206,12 +188,11 @@ export default function Consulta({ usuario, setPagina }: Props) {
                 {dados[0] &&
                   Object.keys(dados[0]).map((coluna) => (
                     <th key={coluna} style={styles.th}>
-                      {formatarCabecalho(coluna)}
+                      {coluna}
                     </th>
                   ))}
               </tr>
             </thead>
-
             <tbody>
               {dados.map((linha, index) => (
                 <tr key={index}>
@@ -236,33 +217,41 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     minHeight: "100vh",
     width: "100%",
+    backgroundImage:
+      "url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg/377c7a2b-edfd-dd1e-c8a6-91d79dc31a39?version=1.0&t=1726774318701')",
     backgroundSize: "cover",
     backgroundPosition: "center",
   },
+
   overlay: {
     minHeight: "100vh",
     backgroundColor: "rgba(0,0,0,0.65)",
     padding: 40,
   },
+
   header: {
     display: "flex",
     justifyContent: "space-between",
     color: "white",
     marginBottom: 40,
   },
+
   titleArea: {
     textAlign: "center",
     color: "white",
     marginBottom: 40,
   },
+
   title: {
     fontSize: 36,
     margin: 0,
   },
+
   subtitle: {
     marginTop: 10,
     opacity: 0.85,
   },
+
   panel: {
     maxWidth: 1100,
     margin: "0 auto 40px auto",
@@ -270,21 +259,25 @@ const styles: { [key: string]: React.CSSProperties } = {
     flexDirection: "column",
     gap: 20,
   },
+
   grupoBusca: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
     gap: 15,
   },
+
   grupoRelatorio: {
     display: "flex",
     justifyContent: "flex-end",
     gap: 15,
   },
+
   input: {
     padding: 10,
     borderRadius: 8,
     border: "1px solid #ccc",
   },
+
   button: {
     padding: "10px 12px",
     height: "42px",
@@ -294,9 +287,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: "white",
     cursor: "pointer",
   },
+
   logoutButton: {
     backgroundColor: "rgba(192,57,43,0.6)",
   },
+
   tableContainer: {
     maxWidth: "100%",
     overflowX: "auto",
@@ -304,16 +299,19 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: 10,
     padding: 20,
   },
+
   table: {
     width: "100%",
     borderCollapse: "collapse",
     textAlign: "center",
   },
+
   th: {
     border: "1px solid #ccc",
     padding: 8,
     backgroundColor: "#f2f2f2",
   },
+
   td: {
     border: "1px solid #ccc",
     padding: 6,
